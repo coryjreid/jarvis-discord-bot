@@ -1,6 +1,5 @@
 const Commando = require('discord.js-commando'),
       oneLine  = require('common-tags').oneLine,
-      sqlite   = require('sqlite'),
       path     = require('path'),
       env      = process.env;
 
@@ -21,7 +20,7 @@ client.mediaPlayer = require('./util/mediaPlayer.js');
 client
 	.on('error', console.error)
 	.on('warn', console.warn)
-	.on('debug', console.log)
+	//.on('debug', console.log)
 	.on('ready', () => {
 		console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
 	})
@@ -65,9 +64,9 @@ client
 	});
     
 
-client.setProvider(
-    sqlite.open(dbFile).then(db => new Commando.SQLiteProvider(db))
-).catch(console.error);
+// client.setProvider(
+//     sqlite.open(dbFile).then(db => new Commando.SQLiteProvider(db))
+// ).catch(console.error);
 
 client.registry
     .registerGroups([
