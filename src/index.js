@@ -5,11 +5,6 @@ const Commando = require('discord.js-commando'),
 
 if (env.NODE_ENV === 'development') require('dotenv').config(); // read environment variables from .env if we're in development
 
-const dbFile = (env.OPENSHIFT_DATA_DIR ? path.join(env.OPENSHIFT_DATA_DIR, 'settings.sqlite3') : path.join(__dirname, 'settings.sqlite3'));
-const webConfig = {
-    webPort: env.OPENSHIFT_NODEJS_PORT || 8080,
-    webIp: env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
-};
 const client = new Commando.Client({owner: env.DISCORD_OWNER_ID, commandPrefix: env.DEFAULT_PREFIX});
 
 // define our mediaPlayer object
