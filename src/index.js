@@ -10,9 +10,6 @@ if (dev) require('dotenv').config(); // read environment variables from .env if 
 const db = !dev ? pgp(env.DATABASE_URL) : pgp({user: env.PG_USER, password: env.PG_PASS, database: env.PG_DB});
 const client = new Commando.Client({owner: env.DISCORD_OWNER_ID});
 
-// define our mediaPlayer object
-client.mediaPlayer = require('./util/mediaPlayer.js');
-
 client
     .on('error', console.error)
     .on('warn', console.warn)
