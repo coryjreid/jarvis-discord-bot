@@ -38,6 +38,7 @@ module.exports = class PlayCommand extends Commando.Command {
 
         if (playlists.has(msg.guild.id)) {
             player = playlists.get(msg.guild.id);
+
             return msg.reply(`I appear to already be playing in **${player.vc.channel.name}**.`);
         } else {
             await voiceChan.join().then(conn => {

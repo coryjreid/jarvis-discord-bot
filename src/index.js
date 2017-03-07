@@ -55,16 +55,7 @@ client
     })
     // TODO: Refactor voiceStateUpdate event to properly leave empty channels
     .on('voiceStateUpdate', (oldMember, newMember) => {
-        let guild = client.guilds.array()[0];
-        guild.channels.forEach(function (channel, key, map) {
-            if (channel.type === 'voice') {
-                if (channel.members.has(client.user.id) && channel.members.size === 1) {
-                    client.mediaPlayer.quitNow = true;
-                    client.mediaPlayer.voiceConn.player.dispatcher.end();
-                    client.mediaPlayer = require('./util/mediaPlayer.js');
-                }
-            }
-        });
+
     });
 
 client.setProvider(new PostgreSQLProvider(db)).catch(console.error);

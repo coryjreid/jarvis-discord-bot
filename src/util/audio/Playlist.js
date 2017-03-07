@@ -4,6 +4,7 @@ const env = process.env,
         baseUrl: 'https://www.googleapis.com/youtube/v3',
         json: true,
         qs: {key: env.YOUTUBE_API_KEY}});
+const twitchStreams = require('twitch-get-stream')(env.TWITCH_CLIENT_ID);
 
 class Playlist {
 
@@ -16,12 +17,31 @@ class Playlist {
     }
 
     async init(args) {
-        if (urlParser.parseProvider(args.url) !== 'youtube') throw Error('Only YouTube links supported');
+        const provider = urlParser.parseProvider(args.url);
         const parsed = urlParser.parse(args.url);
-        if (parsed.list) {
-            await this.loadPlaylist(parsed.list);
-        } else {
-            this.list.push(parsed.id);
+        let song = {provider: null, url: null};
+        switch (provider) {
+            case "youtube":
+                if (parsed.list) {
+                    await this.loadYouTubePlaylist(parsed.list);
+                } else {
+                    song.provider = provider;
+                    song.url = parsed.id;
+                    this.list.push(song);
+                }
+                break;
+            case "twitch":
+                song.provider = provider;
+                // get the stream url
+                await twitchStreams.get(parsed.channel).then(function (streams) {
+                    streams.forEach(function (stream) {
+                        if (stream.quality === 'Audio Only') song.url = stream.url;
+                    });
+                });
+                this.list.push(song);
+                break;
+            default:
+                break;
         }
     }
 
@@ -33,7 +53,19 @@ class Playlist {
         return this._pos <= this.list.length - 1;
     }
 
-    loadPlaylist(id, pageToken = null) {
+    hasPrev() {
+        return this._pos > 0;
+    }
+
+    getNext() {
+        return this.list[this._pos++];
+    }
+
+    addItem(args) {
+
+    }
+
+    loadYouTubePlaylist(id, pageToken = null) {
         return rp.get({
             uri: 'playlistItems',
             qs: {
@@ -43,14 +75,15 @@ class Playlist {
                 pageToken: pageToken
             }
         }).then(res => {
-            for(const item of res.items) this.list.push(item.snippet.resourceId.videoId);
+            for(const item of res.items) {
+                let song = {provider: null, url: null};
+                song.provider = 'youtube';
+                song.url = item.snippet.resourceId.videoId;
+                this.list.push(song);
+            }
             if(res.nextPageToken) return this.loadPlaylist(id, res.nextPageToken);
             return this;
         });
-    }
-
-    getNext() {
-        return this.list[this._pos++];
     }
 }
 
