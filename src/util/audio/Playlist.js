@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const env = process.env,
     urlParser = require('js-video-url-parser'),
     rp = require('request-promise-native').defaults({
@@ -6,17 +7,38 @@ const env = process.env,
         qs: {key: env.YOUTUBE_API_KEY}});
 const twitchStreams = require('twitch-get-stream')(env.TWITCH_CLIENT_ID);
 
-class Playlist {
+class Playlist extends EventEmitter {
 
     /**
      * @constructor
      */
     constructor() {
+        super();
         this.list = [];
         this._pos = 0;
     }
 
     async init(args) {
+        this.addItems(args);
+    }
+
+    length() {
+        return this.list.length;
+    }
+
+    hasNext() {
+        return this._pos <= this.list.length - 1;
+    }
+
+    hasPrev() {
+        return this._pos > 0;
+    }
+
+    getNext() {
+        return this.list[this._pos++];
+    }
+
+    async addItems(args) {
         const provider = urlParser.parseProvider(args.url);
         const parsed = urlParser.parse(args.url);
         let song = {provider: null, url: null};
@@ -41,28 +63,10 @@ class Playlist {
                 this.list.push(song);
                 break;
             default:
+                this.emit('unknownProvider');
+                this.list.push(args.url);
                 break;
         }
-    }
-
-    length() {
-        return this.list.length;
-    }
-
-    hasNext() {
-        return this._pos <= this.list.length - 1;
-    }
-
-    hasPrev() {
-        return this._pos > 0;
-    }
-
-    getNext() {
-        return this.list[this._pos++];
-    }
-
-    addItem(args) {
-
     }
 
     loadYouTubePlaylist(id, pageToken = null) {

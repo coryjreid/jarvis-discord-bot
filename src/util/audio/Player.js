@@ -15,8 +15,12 @@ class Player extends EventEmitter {
         if(!conn) throw new Error('No voice connection');
         this.vc = conn;
         this.guild = conn.channel.guild;
-        this.playlist = list || new Playlist();
         this.dispatcher = null;
+        this.playlist = list || new Playlist();
+        this.playlist.on('unknownProvider', (args) => {
+            console.log('EVENT DETECTED');
+            return this.vc.channel.leave();
+        });
     }
 
 
