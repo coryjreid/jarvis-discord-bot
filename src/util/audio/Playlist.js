@@ -82,7 +82,7 @@ class Playlist {
                 song.url = item.snippet.resourceId.videoId;
                 this.list.push(song);
             }
-            if(res.nextPageToken) return this.loadPlaylist(id, res.nextPageToken);
+            if(res.nextPageToken) return this.loadYouTubePlaylist(id, res.nextPageToken);
             return this;
         });
     }
