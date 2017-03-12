@@ -33,6 +33,8 @@ module.exports = class PlayCommand extends Commando.Command {
         let player = Player.getPlayer(msg);
         player.canPlay(msg).then(vc => {
             return player.init(vc, msg, args);
+        }).then(() => {
+            // we can do something here
         }).catch(err => {msg.reply(err)});
     }
 };
