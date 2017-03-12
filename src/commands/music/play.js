@@ -30,26 +30,9 @@ module.exports = class PlayCommand extends Commando.Command {
     }
 
     async run(msg, args) {
-        let client = msg.client;
-        let voiceChan = msg.member.voiceChannel;
-        let player = null;
-
-        if (!voiceChan) return msg.reply(`Please join a voice channel first.`);
-
-        if (playlists.has(msg.guild.id)) {
-            player = playlists.get(msg.guild.id);
-            player.playlist.addItems(args.url);
-            return msg.reply(`I've added your request to the list. The playlist now has ${player.playlist.length()} items.`);
-        } else {
-            await voiceChan.join().then(conn => {
-                player = new Player(conn);
-                player.init(args)
-                    .then(() => {
-                        msg.reply(`starting with playlist of ${player.playlist.length()} items.`);
-                    }).catch(e=>console.log(e));
-            });
-        }
-
-
+        let player = Player.getPlayer(msg);
+        player.canPlay(msg).then(vc => {
+            return player.init(vc, msg, args);
+        }).catch(err => {msg.reply(err)});
     }
 };
