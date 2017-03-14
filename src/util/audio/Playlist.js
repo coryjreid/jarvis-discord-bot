@@ -1,6 +1,7 @@
 const spawn = require('child_process').spawn;
 const StringDecoder = require('string_decoder').StringDecoder;
 const decoder = new StringDecoder('utf8');
+const ytdlPath = (process.env.NODE_ENV === "development" ? 'youtube-dl' : '~/node_modules/youtube-dl/bin/youtube-dl');
 
 class Playlist {
 
@@ -37,7 +38,7 @@ class Playlist {
 
     async addItems(args) {
         return new Promise((res, rej) => {
-            const ytdl = spawn('youtube-dl', ['-s', '-g', '-i', '-f bestaudio', args.url]);
+            const ytdl = spawn(ytdlPath, ['-s', '-g', '-i', '-f bestaudio', args.url]);
             let errors = [], count = 0;
 
             ytdl.stdout.on('data', (data) => {
