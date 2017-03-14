@@ -1,4 +1,3 @@
-const ytdl = require('ytdl-core');
 const storage = require('../storage/playlists');
 const Playlist = require('./Playlist');
 const ffmpeg = require('fluent-ffmpeg');
