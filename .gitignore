@@ -1,8 +1,8 @@
 # IDE data
 .idea/
 
-# Scratch code
-scratch/
+# test.js
+test.js
 
 # Logs
 logs

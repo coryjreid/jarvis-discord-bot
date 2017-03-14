@@ -1,6 +1,7 @@
 const Commando = require('discord.js-commando');
 const oneLine = require('common-tags').oneLine;
 const Player = require('../../util/audio/Player');
+const players = require('../../util/storage/playlists');
 
 module.exports = class StopCommand extends Commando.Command {
     constructor(client) {
@@ -11,16 +12,20 @@ module.exports = class StopCommand extends Commando.Command {
             memberName: 'stop',
             description: 'Stops the currently playing stream.',
             details: oneLine`
-				This command can play audio streams from various sources. Typically used for music.
-				This command is the envy of all other commands.
+				This command will stop whatever the bot is currently streaming.
+				You must be in the same channel as the bot to control the bot.
 			`,
             examples: ['stop']
         });
     }
 
     async run(msg, args) {
-        let player = Player.getPlayer(msg);
-        if (Player.canControl(msg)) player.stop();
-        else msg.reply(`we need to be in the same channel for you to command me. 🖕🖕🖕`);
+        let player = players.get(msg.guild.id);
+        if (player && player.playing) {
+            if (Player.canControl(msg.member, msg.client.user.id)) {
+                msg.reply(`😢`);
+                player.stop();
+            } else msg.reply(`we need to be in the same channel for you to command me. 🖕🖕🖕`);
+        }
     }
 };
