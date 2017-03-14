@@ -1,7 +1,7 @@
 const spawn = require('child_process').spawn;
 const StringDecoder = require('string_decoder').StringDecoder;
 const decoder = new StringDecoder('utf8');
-const ytdlPath = (process.env.NODE_ENV === "development" ? 'youtube-dl' : '~/node_modules/youtube-dl/bin/youtube-dl');
+const ytdlPath = (process.env.NODE_ENV === "development" ? 'youtube-dl' : '/app/node_modules/youtube-dl/bin/youtube-dl');
 
 class Playlist {
 
