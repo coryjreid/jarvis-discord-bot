@@ -41,11 +41,7 @@ class Playlist {
             const ytdl = spawn(ytdlPath, ['-s', '-g', '-i', '-f bestaudio', args.url]);
             let errors = [], count = 0;
 
-            ytdl.stdout.on('data', (data) => {
-                ++count;
-                this.list.push(decoder.write(data).trim());
-                console.log(decoder.write(data).trim());
-            });
+            ytdl.stdout.on('data', (data) => { this.list.push(decoder.write(data).trim()) });
 
             ytdl.stderr.on('data', (data) => {
                 const error = decoder.write(data).trim();
