@@ -44,6 +44,7 @@ class Playlist {
             ytdl.stdout.on('data', (data) => {
                 ++count;
                 this.list.push(decoder.write(data).trim());
+                console.log(decoder.write(data).trim());
             });
 
             ytdl.stderr.on('data', (data) => {
