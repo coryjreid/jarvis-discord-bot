@@ -28,7 +28,10 @@ class Player {
             if (this.list.getLength() > 0) this.list.addItems(args).then(res).catch(rej);
             else {
                 this.list.init(args)
-                    .then(() => {return voiceChan.join()})
+                    .then((errors) => {
+                        if (errors) msg.reply(`Things are good, but there were some errors: ${errors}`);
+                        return voiceChan.join()
+                    })
                     .then(conn => {
                         this.vc = conn;
                         this.play();
@@ -101,7 +104,7 @@ class Player {
      * @param client
      * @returns {boolean}
      */
-    static canControl(user, client) { return user.voiceChannel.members.has(client); }
+    static canControl(user, client) { return (user.voiceChannel ? user.voiceChannel.members.has(client) : false); }
 
     /**
      *
